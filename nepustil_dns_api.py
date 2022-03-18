@@ -4,13 +4,15 @@ import re
 from io import StringIO
 import csv
 
-BASE_URL="https://dnsadm.nepustil.net/index.cgi"
-user=""
-password=""
+BASE_URL = "https://dnsadm.nepustil.net/index.cgi"
+user = ""
+password = ""
 
 """Get PTR Records"""
+
+
 def getRecords():
-    action="readzone"
+    action = "readzone"
     data = {
         'domain': user,
         'password': password,
@@ -22,7 +24,7 @@ def getRecords():
     res = []
     for line in request.text.splitlines():
         if(line.startswith("254")):
-            read=True
+            read = True
             continue
         if(read):
             list = re.sub("\s+", ",", line.strip())
@@ -31,7 +33,10 @@ def getRecords():
                 res.append(row)
     return res
 
+
 """Check if Record Exists"""
+
+
 def existsRecord(ip):
     res = getRecords()
     for record in res:
@@ -39,9 +44,12 @@ def existsRecord(ip):
             return True
     return False
 
+
 """Add PTR Record"""
+
+
 def addRecord(domain, ip):
-    action="doaddrr"
+    action = "doaddrr"
     data = {
         'domain': user,
         'password': password,
@@ -51,16 +59,18 @@ def addRecord(domain, ip):
         'resval': domain+".",
         'resttl': 86400
     }
-    request = requests.post(BASE_URL, data=data)
-    #print(request.text)
+    requests.post(BASE_URL, data=data)
+
 
 """Remove PTR Record"""
+
+
 def removeRecord(ip):
     res = getRecords()
     for record in res:
         if(record[0] == ip):
             domain = record[4]
-    action="dodelrr"
+    action = "dodelrr"
     data = {
         'domain': user,
         'password': password,
@@ -70,9 +80,4 @@ def removeRecord(ip):
         'resval': domain,
         'resttl': 86400
     }
-    request = requests.post(BASE_URL, data=data)
-
-if(existsRecord("111")):
-    removeRecord("111")
-addRecord("test.de", "111")
-print(getRecords())
+    requests.post(BASE_URL, data=data)
