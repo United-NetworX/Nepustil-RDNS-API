@@ -11,7 +11,7 @@ password=""
 
 Zum Import der Library:
 ```python
-from nepustil_dns_api import existsRecord, removeRecord, addRecord
+from nepustil_dns_api import existsRecord, removeRecord, addRecord, getRecords
 
 # Check if Record Exists
 if(existsRecord("111")):
